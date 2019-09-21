@@ -8,7 +8,7 @@
 
 def translate(DNASequence):     #This function takes a DNA sequence of any length and converts each codon section into its SLC codes, in other words it returns the amino acid SLC code 
                                 #(this is only done for codons I,L,V,F,M, all others are referred to as 'X')
-    #Below stores the codons that relate to the first few SLC codes
+    #Below stores the codons that relate to the first 5 SLC codes
     SLC_I = ["ATT","ATC","ATA"]
     SLC_L = ["CTT","CTC","CTA","CTG","TTA","TTG"]
     SLC_V = ["GTT","GTC","GTA","GTG"]
@@ -27,7 +27,7 @@ def translate(DNASequence):     #This function takes a DNA sequence of any lengt
         elif codon in SLC_V: aminoAcids += "V"
         elif codon in SLC_F: aminoAcids += "F"
         elif codon in SLC_M: aminoAcids += "M"
-        else: aminoAcids += "X"
+        else: aminoAcids += "X" #We are only working with 5 SLC codes, any others are marked with an 'X'
         count += 3  #+3 to skip to the next codon
     return aminoAcids
 
@@ -58,25 +58,46 @@ def mutate():
 #function will read a text file with DNA sequences and pass it to the translate function to convert to SLC codes 
 def txtTranslate(userInput):
     if userInput == 2:
-        userFile = open('normalDNA.txt', 'r') 
+       userFile = open('normalDNA.txt', 'r') 
     elif userInput == 3:
         userFile = open('mutatedDNA.txt','r')
     userFile.read()
     userFile.seek(0)
-    translation = ""
+    translation = ""    #Initialise blank output variable
     for lines in userFile:
-        translation += translate(lines) + "\n"      #converts the full line of DNA sequencew
+        translation += translate(lines) + "\n"      #converts the full line of DNA sequence
     print("The DNA sequence / amino acid SLC code translation has been completed!")
-    userFile.close()
     print ("\n As you can see below the DNA sequence has been translated; the 'I', 'L', 'V', 'F', 'M' characters represent five of the different amino acid SLC codes, 'X' refers to all of the remaining SLC codes\n")
+    userFile.close()
     return translation
 
+def userInputMenu():
+    #Repeatedly runs user prompt
+    userInput = -1 #Initialise to a number other than zero to allow while loop to start
+    while (userInput != 0):
+        userInput = int(input("Type in...\n (1) to read in the original DNA sequence, DNA.txt;\n (2) to read the translated amino acid codes in normalDNA.txt file;\n (3) to read the translated amino acid codes with mutatiins in mutatedDNA.txt; \n or (0) - Zero to exit "))
+        if userInput == 1:
+            userFile = open('normalDNA.txt', 'r') 
+            userFile.read()
+            userFile.seek(0)
+            for lines in userFile:
+                print(lines)
+        elif userInput == 2 or userInput ==3:
+            print(txtTranslate(userInput)) #Runs the translation of the DNA sequence to the amino acid SLC codes (for five amino acids)
+        elif userInput == 0:
+            exit
+        else:
+            print("Wrong input! Please try again...")
+
+
+#Execution of above methods and user prompting
 print("\n\n")
 print("This program converts a DNA sequence to its resulting amino acid SLC codes (for 5 amino acids), and performs a 'mutation' of genes")
 print("This mutation simulates the effects of the Single Nucleotide Polymorphism that leads to Sickle Cell  disease\n")
 mutate()
-userInput = int(input("Type in 1 to read in the original DNA sequence, DNA.txt, 2 to read the translated amino acid codes in normalDNA.txt file or 3 to read the translated amino acid codes with mutatioins in mutatedDNA.txt: "))
-print(txtTranslate(userInput)) #Runs the translation of the DNA sequence to the amino acid SLC codes (for five amino acids)
+
+#Repeatedly runs user prompt
+userInputMenu()
 
 #From what I could see the lowercase 'a' that had to be replaced using the mutate function was an 'extra' character, i.e. it wasnt part of a grouping of 3, 
 #Therefore it was excluded from Amino Acid conversions, and also a conversion on both the normalDNA.txt and mutatedDNA.txt would have produced the same results
